@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { evaluateMatchup, getRandomMatchup, getEffectivenessDescription, type Matchup } from './data/weaknesses';
+import { evaluateMatchup, getRandomMatchup, type Matchup } from './data/weaknesses';
 
 function App() {
   const [currentMatchup, setCurrentMatchup] = useState<Matchup | undefined>();
@@ -30,32 +30,33 @@ function App() {
 
   return (
     <>
-      <h1>Pokemon Type Matchup Test</h1>
+      <h1>Pokemon Type Weakness Test</h1>
       <div className="card">
         {currentMatchup && (
           <>
             <div style={{ display: 'flex', gap: '10px', maxWidth: '480px', border: '1px solid black', margin: 'auto', alignItems: 'center' }}>
               <div style={{ flex: 1, display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Attack Type</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bolder' }}>{currentMatchup.attackingType}</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bolder' }}>{currentMatchup.attackingType.name}</div>
               </div>
               <div style={{ fontSize: '16px', fontWeight: 'bold', flex: 'fit' }}>Vs.</div>
               <div style={{ flex: 1, display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Defending Types</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bolder' }}>{currentMatchup.defendingTypes.join(', ')}</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bolder' }}>
+                  {currentMatchup.defendingTypes.map(d=> d.name).join(', ')}
+                </div>
               </div>
-            </div>
-            <div style={{ minHeight: "300px" }}>
+            </div>            
+            <div style={{ minHeight: "200px", marginTop: '60px' }}>
               {showResults && (
                 <>
-                  <h3>{getEffectivenessDescription(currentMatchupResults?.totalEffectiveness)}</h3>
+                  <h3>{currentMatchupResults?.totalEffectivenessDescription}</h3>
                   {/* <p>Attack Multiplier: {currentMatchupResults?.totalEffectiveness}</p> */}
-                  <div style={{ margin: 'auto', fontSize: '12px', color: '#222'}}>
-                    <div>Details</div>
+                  <div style={{ margin: 'auto', fontSize: '12px', color: '#222'}}>                    
                     <ul>
-                      {currentMatchupResults?.breakdown.map((result) => (
-                        <li style={{listStyleType: "none"}} key={result.defendingType}>
-                          {result.defendingType}: x{result.effectiveness}
+                      {((currentMatchupResults?.breakdown?.length || 0) > 1) && currentMatchupResults?.breakdown.map((result) => (
+                        <li style={{listStyleType: "none"}} key={result.defendingType.name}>
+                          {result.defendingType.name}: x{result.effectiveness}
                         </li>
                       ))}
                     </ul>
