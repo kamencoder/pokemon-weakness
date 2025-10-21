@@ -113,6 +113,7 @@ export const getRandomMatchup = (maxDefendingTypes: number = 1): Matchup => {
 export type MatchupResults = {
     totalEffectiveness: Effectiveness;   
     totalEffectivenessDescription: string;
+    totalEffectivenessColor: string;
     breakdown: EffectivenessAgainstType[];
 }
 export type EffectivenessAgainstType = {
@@ -134,18 +135,35 @@ export const evaluateMatchup = (matchup: Matchup): MatchupResults => {
     return {
         totalEffectiveness,
         totalEffectivenessDescription: getEffectivenessDescription(totalEffectiveness),
+        totalEffectivenessColor: getEffectivenessColor(totalEffectiveness),
         breakdown: attackModifiersPerDefendingType
     }
 }
 
 export const getEffectivenessDescription = (effectiveness?: Effectiveness): string => {
-    switch (effectiveness) {
-        case 0: return 'No Effect (x0)';
-        case 0.25: return 'Extremely Ineffective (1⁄4)';
-        case 0.5: return 'Not Very Effective (1⁄2)';
-        case 1: return 'Normal Effectiveness (x1)';
-        case 2: return 'Super Effective (2x)';
-        case 4: return 'Extremely Effective (4x)';
-        default: return '?????';
-    }
+    const description = effectivenessDetails[effectiveness as Effectiveness]?.description;
+    return description || '?????';
 }
+
+export const getEffectivenessColor = (effectiveness?: Effectiveness): string => {
+    const color = effectivenessDetails[effectiveness as Effectiveness]?.color;
+    return color || 'gray';
+}
+
+export type EffectivenessDetail = {
+    value: Effectiveness;
+    description: string;
+    color: string;
+}   
+export const effectivenessDetails: { [key in Effectiveness]: EffectivenessDetail } = {
+    0: { value: 0, description: 'No Effect (x0)', color: '#AAA' },
+    0.25: { value: 0.25, description: 'Extremely Ineffective (1⁄4)', color: '#FFD93B' },
+    0.5: { value: 0.5, description: 'Not Very Effective (1⁄2)', color: '#FFA531' },
+    1: { value: 1, description: 'Normal Effectiveness (x1)', color: '#FF6B1A' },
+    2: { value: 2, description: 'Super Effective (2x)', color: '#E63946' },
+    4: { value: 4, description: 'Extremely Effective (4x)', color: '#dd539fff' },
+};
+
+export const effectivenessValues: Effectiveness[] = [0, 0.25, 0.5, 1, 2, 4];
+
+export const effectivenessValueDetailList: EffectivenessDetail[] = effectivenessValues.map(value => effectivenessDetails[value]);

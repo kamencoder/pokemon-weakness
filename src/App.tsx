@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { evaluateMatchup, getRandomMatchup, type Matchup } from './data/weaknesses';
+import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getEffectivenessDescription, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
 
 function App() {
   const [currentMatchup, setCurrentMatchup] = useState<Matchup | undefined>();
   const [showResults, setShowResults] = useState(false);
+  const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | undefined>(undefined);
+  const [answersCorrectCount, setAnswersCorrectCount] = useState(0);
+  const [questionsAnsweredCount, setQuestionsAnsweredCount] = useState(0);
+  const scorePercentage = questionsAnsweredCount ? Math.round(answersCorrectCount / questionsAnsweredCount * 100) : 0;
   const currentMatchupResults = useMemo(() => {
     if (!currentMatchup) {
       console.log('No matchup set!');
@@ -13,14 +17,12 @@ function App() {
     const matchupResults = evaluateMatchup(currentMatchup);
     return matchupResults;
   }, [currentMatchup]);
+
   const onNewMatchupClick = () => {
     setShowResults(false);
+    setLastAnswerCorrect(undefined);
     const newMatchup = getRandomMatchup(2);
     setCurrentMatchup(newMatchup);
-  }
-
-  const onShowResultsClick = () => {
-    setShowResults(true);
   }
 
   useEffect(() => {
@@ -28,38 +30,69 @@ function App() {
     setCurrentMatchup(newMatchup);
   }, [])
 
+  const checkAnswer = (userAnswer: Effectiveness) => {
+    if (userAnswer === currentMatchupResults?.totalEffectiveness) {
+      setLastAnswerCorrect(true);
+      setQuestionsAnsweredCount(questionsAnsweredCount + 1);
+      setAnswersCorrectCount(answersCorrectCount + 1);
+    } else {
+      setQuestionsAnsweredCount(questionsAnsweredCount + 1);
+      setLastAnswerCorrect(false);
+    }
+    setShowResults(true);
+  }
+
+  const AnswerButton = ({ effectivenessDetail}: { effectivenessDetail: EffectivenessDetail }) => {
+    const onClick = () => checkAnswer(effectivenessDetail.value);
+    return (
+      <button
+        style={{ width: "6em", height: "3em", backgroundColor: getEffectivenessColor(effectivenessDetail.value) }}
+        onClick={onClick}>
+        {effectivenessDetail.value}x
+      </button>
+    )
+  }
+
   return (
     <>
       <h1>Pokemon Type Weakness Test</h1>
       <div className="card">
         {currentMatchup && (
           <>
-            <div style={{ display: 'flex', gap: '10px', maxWidth: '480px', border: '1px solid black', margin: 'auto', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '10px', maxWidth: '480px', border: '1px solid black', padding: '1em', margin: 'auto', alignItems: 'center' }}>
               <div style={{ flex: 1, display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Attack Type</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bolder' }}>{currentMatchup.attackingType.name}</div>
+                <div>
+                  <span style={{ fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${currentMatchup.attackingType.color}`, padding: '0.5em', borderRadius: '20px' }}>{currentMatchup.attackingType.name}</span>
+                </div>
               </div>
               <div style={{ fontSize: '16px', fontWeight: 'bold', flex: 'fit' }}>Vs.</div>
               <div style={{ flex: 1, display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Defending Types</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bolder' }}>
-                  {currentMatchup.defendingTypes.map(d=> d.name).join(', ')}
+                <div >
+                  {currentMatchup.defendingTypes.map(d => (
+                    <span style={{ fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${d.color}`, padding: '0.5em', borderRadius: '20px' }}>{d.name}</span>
+                  ))}
                 </div>
               </div>
-            </div>            
-            <div style={{ minHeight: "200px", marginTop: '60px' }}>
+            </div>
+            <div style={{ marginTop: '60px' }}>
               {showResults && (
                 <>
-                  <h3>{currentMatchupResults?.totalEffectivenessDescription}</h3>
+                  <div>{lastAnswerCorrect ? '✔️ Correct!' : '❌ Incorrect'}</div>
+                  <div style={{ color: `${currentMatchupResults?.totalEffectivenessColor}`, fontSize: '24px', fontWeight: 'bolder', margin: '20px' }}>{currentMatchupResults?.totalEffectivenessDescription}</div>
                   {/* <p>Attack Multiplier: {currentMatchupResults?.totalEffectiveness}</p> */}
-                  <div style={{ margin: 'auto', fontSize: '12px', color: '#222'}}>                    
+                  <div style={{ margin: 'auto', fontSize: '12px', color: '#222' }}>
                     <ul>
                       {((currentMatchupResults?.breakdown?.length || 0) > 1) && currentMatchupResults?.breakdown.map((result) => (
-                        <li style={{listStyleType: "none"}} key={result.defendingType.name}>
+                        <li style={{ listStyleType: "none" }} key={result.defendingType.name}>
                           {result.defendingType.name}: x{result.effectiveness}
                         </li>
                       ))}
                     </ul>
+                  </div>
+                  <div style={{ marginTop: '40px', fontSize: '10px' }}>
+                    <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">Is that really true?!</a>
                   </div>
                 </>
               )}
@@ -74,15 +107,31 @@ function App() {
             New Matchup
           </button>
         ) : (
-          <button onClick={onShowResultsClick}>
-            Show Results
-          </button>
+          // <button onClick={onShowResultsClick}>
+          //   Show Results
+          // </button>
+          <>
+            <div style={{ fontSize: "24px", marginBottom: '32px' }}>
+              <span>What is the damage multipier for the attack?</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center' }}>
+                {[0.25, 0.5, 1, 2, 4].map(value => (
+                  <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
+                ))}                
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center' }}>
+                <AnswerButton effectivenessDetail={effectivenessDetails[0]}/>
+              </div>
+            </div>
+          </>
         )}
 
       </div>
       {/* Open in new tab */}
+
       <div style={{ marginTop: '40px', fontSize: '10px' }}>
-        <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">Is this right?</a>
+        <span>{answersCorrectCount} / {questionsAnsweredCount} ({scorePercentage}%)</span>
       </div>
     </>
   )
