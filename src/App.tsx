@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
+import { TypeIcon } from './helpers/type-icons';
 
 function App() {
   const [currentMatchup, setCurrentMatchup] = useState<Matchup | undefined>();
@@ -62,19 +63,28 @@ function App() {
             <div style={{ fontSize: "24px", marginBottom: '32px', fontWeight: 'bolder' }}>
               <span>What is the damage multipier for the attack?</span>
             </div>
-            <div style={{ display: 'flex', gap: '10px', maxWidth: '480px', border: '2px solid #AAA', borderRadius: '16px', padding: '2em', margin: 'auto', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '6px', maxWidth: '480px', border: '2px solid #AAA', borderRadius: '16px', padding: '1em', margin: 'auto', alignItems: 'center' }}>
               <div style={{ flex: 1, display: 'flex', gap: '1.5em', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Attack Type</div>
-                <div>
-                  <span style={{ fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${currentMatchup.attackingType.color}`, padding: '0.5em', borderRadius: '20px' }}>{currentMatchup.attackingType.name}</span>
+                <div>                  
+                  <div style={{ width: '80px', fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${currentMatchup.attackingType.color}`, padding: '0.5em', borderRadius: '20px' }}>
+                    <div><TypeIcon type={currentMatchup.attackingType.name} style={{ width: '1em', height: '1em' }} /></div>
+                    <div>{currentMatchup.attackingType.name}</div>
+                  </div>
                 </div>
               </div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', flex: 'fit' }}>Vs.</div>
+              <div>
+                <div style={{ fontSize: '16px', fontWeight: 'bold' }}>&nbsp;</div>
+                <div style={{ fontSize: '24px', fontWeight: 'bold', flex: 'fit' }}>Vs.</div>
+              </div>
               <div style={{ flex: 1, display: 'flex', gap: '1.5em', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Defending Types</div>
                 <div >
                   {currentMatchup.defendingTypes.map(d => (
-                    <span style={{ fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${d.color}`, padding: '0.5em', borderRadius: '20px' }}>{d.name}</span>
+                    <div style={{ width: '80px', display:'inline-block', fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${d.color}`, padding: '0.5em', borderRadius: '20px' }}>
+                      <div><TypeIcon type={d.name} style={{ width: '1em', height: '1em' }} /></div>
+                      <div>{d.name}</div>
+                    </div>
                   ))}
                 </div>
               </div>
