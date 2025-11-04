@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getEffectivenessDescription, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
+import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
 
 function App() {
   const [currentMatchup, setCurrentMatchup] = useState<Matchup | undefined>();
