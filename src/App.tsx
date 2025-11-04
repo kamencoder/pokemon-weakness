@@ -43,11 +43,12 @@ function App() {
     setShowResults(true);
   }
 
-  const AnswerButton = ({ effectivenessDetail}: { effectivenessDetail: EffectivenessDetail }) => {
+  const AnswerButton = ({ effectivenessDetail }: { effectivenessDetail: EffectivenessDetail }) => {
     const onClick = () => checkAnswer(effectivenessDetail.value);
     return (
       <button
-        style={{ width: "6em", height: "3em", backgroundColor: getEffectivenessColor(effectivenessDetail.value) }}
+        className="answer-button"
+        style={{ backgroundColor: getEffectivenessColor(effectivenessDetail.value) }}
         onClick={onClick}>
         {effectivenessDetail.value}x
       </button>
@@ -59,45 +60,40 @@ function App() {
       {/* <h1>Pokemon Type Weakness Test</h1> */}
       <div className="card">
         {currentMatchup && (
-          <>          
-            <div style={{ fontSize: "24px", marginBottom: '32px', fontWeight: 'bolder' }}>
-              <span>What is the damage multipier for the attack?</span>
+          <>
+            <div className="question-text">
+              <span>What is the damage multiplier for the attack?</span>
             </div>
-            <div style={{ display: 'flex', gap: '6px', maxWidth: '480px', border: '2px solid #AAA', borderRadius: '16px', padding: '1em', margin: 'auto', alignItems: 'center' }}>
-              <div style={{ flex: 1, display: 'flex', gap: '1.5em', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Attack Type</div>
-                <div>                  
-                  <div style={{ width: '80px', fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${currentMatchup.attackingType.color}`, padding: '0.5em', borderRadius: '20px' }}>
-                    <div><TypeIcon type={currentMatchup.attackingType.name} style={{ width: '1em', height: '1em' }} /></div>
-                    <div>{currentMatchup.attackingType.name}</div>
-                  </div>
+            <div className="matchup-container">
+              <div className="matchup-section">
+                <div className="matchup-section-text">Attack Type</div>
+                <div className="matchup-type-container" style={{ backgroundColor: currentMatchup.attackingType.color }}>
+                  <div><TypeIcon type={currentMatchup.attackingType.name} style={{ width: '1em', height: '1em' }} /></div>
+                  <div>{currentMatchup.attackingType.name}</div>
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: '16px', fontWeight: 'bold' }}>&nbsp;</div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', flex: 'fit' }}>Vs.</div>
+                <div style={{fontSize: '3em'}}>Vs.</div>
               </div>
-              <div style={{ flex: 1, display: 'flex', gap: '1.5em', flexDirection: 'column', alignItems: 'center' }}>
-                <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Defending Types</div>
-                <div >
-                  {currentMatchup.defendingTypes.map(d => (
-                    <div style={{ width: '80px', display:'inline-block', fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${d.color}`, padding: '0.5em', borderRadius: '20px' }}>
-                      <div><TypeIcon type={d.name} style={{ width: '1em', height: '1em' }} /></div>
-                      <div>{d.name}</div>
-                    </div>
-                  ))}
-                </div>
+              <div className="matchup-section">
+                <div className="matchup-section-text">Defending Types</div>
+                {currentMatchup.defendingTypes.map(d => (
+                  <div key={d.name} className="matchup-type-container" style={{ backgroundColor: d.color }}>
+                    <div><TypeIcon type={d.name} style={{ width: '1em', height: '1em' }} /></div>
+                    <div>{d.name}</div>
+                  </div>
+                ))}
               </div>
             </div>
             <div style={{ marginTop: '40px' }}>
               {showResults && (
                 <>
-                  <div 
-                    style={{fontSize: '36px', backgroundColor: lastAnswerCorrect ? 'green' : 'red', color: 'white', borderRadius: '1em', width: '1.5em', height: '1.5em', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: 'auto' }}
-                  >
+                  <div className="result-icon" style={{ backgroundColor: lastAnswerCorrect ? 'green' : 'red' }}>
                     {lastAnswerCorrect ? '✔' : '✘'}
                   </div>
-                  <div style={{ color: `${currentMatchupResults?.totalEffectivenessColor}`, fontSize: '24px', fontWeight: 'bolder', margin: '20px' }}>{currentMatchupResults?.totalEffectivenessDescription}</div>
+                  <div className="result-text" style={{ color: currentMatchupResults?.totalEffectivenessColor }}>
+                    {currentMatchupResults?.totalEffectivenessDescription}
+                  </div>
                   {/* <p>Attack Multiplier: {currentMatchupResults?.totalEffectiveness}</p> */}
                   <div style={{ margin: 'auto', fontSize: '12px', color: '#222' }}>
                     <ul>
@@ -120,7 +116,7 @@ function App() {
 
       <div>
         {(!currentMatchup || showResults) ? (
-          <button onClick={onNewMatchupClick}>
+          <button style={{ padding: '1em', width: '180px', color: 'white', backgroundColor: '#1E90FF' }} onClick={onNewMatchupClick}>
             New Matchup
           </button>
         ) : (
@@ -128,15 +124,11 @@ function App() {
           //   Show Results
           // </button>
           <>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
-              <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center' }}>
-                {[0.25, 0.5, 1, 2, 4].map(value => (
-                  <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
-                ))}                
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center' }}>
-                <AnswerButton effectivenessDetail={effectivenessDetails[0]}/>
-              </div>
+            <div className="answer-buttons">
+              {[0.25, 0.5, 1, 2, 4].map(value => (
+                <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
+              ))}
+              <AnswerButton effectivenessDetail={effectivenessDetails[0]} />
             </div>
           </>
         )}
