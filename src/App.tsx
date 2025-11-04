@@ -55,19 +55,22 @@ function App() {
 
   return (
     <>
-      <h1>Pokemon Type Weakness Test</h1>
+      {/* <h1>Pokemon Type Weakness Test</h1> */}
       <div className="card">
         {currentMatchup && (
-          <>
-            <div style={{ display: 'flex', gap: '10px', maxWidth: '480px', border: '1px solid black', padding: '1em', margin: 'auto', alignItems: 'center' }}>
-              <div style={{ flex: 1, display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center' }}>
+          <>          
+            <div style={{ fontSize: "24px", marginBottom: '32px', fontWeight: 'bolder' }}>
+              <span>What is the damage multipier for the attack?</span>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', maxWidth: '480px', border: '2px solid #AAA', borderRadius: '16px', padding: '2em', margin: 'auto', alignItems: 'center' }}>
+              <div style={{ flex: 1, display: 'flex', gap: '1.5em', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Attack Type</div>
                 <div>
                   <span style={{ fontSize: '24px', fontWeight: 'bolder', color: 'white', backgroundColor: `${currentMatchup.attackingType.color}`, padding: '0.5em', borderRadius: '20px' }}>{currentMatchup.attackingType.name}</span>
                 </div>
               </div>
-              <div style={{ fontSize: '16px', fontWeight: 'bold', flex: 'fit' }}>Vs.</div>
-              <div style={{ flex: 1, display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ fontSize: '24px', fontWeight: 'bold', flex: 'fit' }}>Vs.</div>
+              <div style={{ flex: 1, display: 'flex', gap: '1.5em', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ fontSize: '16px', fontWeight: 'bold' }}>Defending Types</div>
                 <div >
                   {currentMatchup.defendingTypes.map(d => (
@@ -76,10 +79,14 @@ function App() {
                 </div>
               </div>
             </div>
-            <div style={{ marginTop: '60px' }}>
+            <div style={{ marginTop: '40px' }}>
               {showResults && (
                 <>
-                  <div>{lastAnswerCorrect ? '✔️ Correct!' : '❌ Incorrect'}</div>
+                  <div 
+                    style={{fontSize: '36px', backgroundColor: lastAnswerCorrect ? 'green' : 'red', color: 'white', borderRadius: '1em', width: '1.5em', height: '1.5em', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: 'auto' }}
+                  >
+                    {lastAnswerCorrect ? '✔' : '✘'}
+                  </div>
                   <div style={{ color: `${currentMatchupResults?.totalEffectivenessColor}`, fontSize: '24px', fontWeight: 'bolder', margin: '20px' }}>{currentMatchupResults?.totalEffectivenessDescription}</div>
                   {/* <p>Attack Multiplier: {currentMatchupResults?.totalEffectiveness}</p> */}
                   <div style={{ margin: 'auto', fontSize: '12px', color: '#222' }}>
@@ -91,7 +98,7 @@ function App() {
                       ))}
                     </ul>
                   </div>
-                  <div style={{ marginTop: '40px', fontSize: '10px' }}>
+                  <div style={{ fontSize: '10px' }}>
                     <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">Is that really true?!</a>
                   </div>
                 </>
@@ -111,9 +118,6 @@ function App() {
           //   Show Results
           // </button>
           <>
-            <div style={{ fontSize: "24px", marginBottom: '32px' }}>
-              <span>What is the damage multipier for the attack?</span>
-            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
               <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center' }}>
                 {[0.25, 0.5, 1, 2, 4].map(value => (
