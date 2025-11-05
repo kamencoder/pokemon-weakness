@@ -1,4 +1,4 @@
-import { use, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
 import { TypeIcon } from './helpers/type-icons';
@@ -193,11 +193,14 @@ function App() {
               <div className="question-text">
                 <span>What is the damage multiplier for the attack?</span>
               </div>
-              <div className="answer-buttons">
+              <div className="answer-buttons" style={{marginTop: "1rem"}}>
                 {[0.25, 0.5, 1, 2, 4].map(value => (
                   <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
                 ))}
-                <AnswerButton effectivenessDetail={effectivenessDetails[0]} />
+              </div>
+              <div className="answer-buttons" style={{marginTop: "0.5rem"}}>
+                <AnswerButton effectivenessDetail={effectivenessDetails[0 as Effectiveness]} key={0} />
+                
               </div>
             </>
           )}
