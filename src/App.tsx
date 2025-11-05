@@ -18,6 +18,14 @@ function App() {
     const matchupResults = evaluateMatchup(currentMatchup);
     return matchupResults;
   }, [currentMatchup]);
+  const resultsBreakdown = useMemo(() => {
+    if ((currentMatchupResults?.breakdown?.length || 0) < 1) {
+      return "";
+    }
+    return currentMatchupResults?.breakdown
+      .map(result => `${result.defendingType.name}: x${result.effectiveness}`)
+      .join(", ");
+  }, [currentMatchupResults]);
 
   const onNewMatchupClick = () => {
     setShowResults(false);
@@ -61,9 +69,6 @@ function App() {
       <div className="card">
         {currentMatchup && (
           <>
-            <div className="question-text">
-              <span>What is the damage multiplier for the attack?</span>
-            </div>
             <div className="matchup-container">
               <div className="matchup-section">
                 <div className="matchup-section-text">Attack Type</div>
@@ -73,7 +78,7 @@ function App() {
                 </div>
               </div>
               <div>
-                <div style={{fontSize: '3em'}}>Vs.</div>
+                <div style={{ fontSize: '3em' }}>Vs.</div>
               </div>
               <div className="matchup-section">
                 <div className="matchup-section-text">Defending Types</div>
@@ -94,19 +99,14 @@ function App() {
                   <div className="result-text" style={{ color: currentMatchupResults?.totalEffectivenessColor }}>
                     {currentMatchupResults?.totalEffectivenessDescription}
                   </div>
-                  {/* <p>Attack Multiplier: {currentMatchupResults?.totalEffectiveness}</p> */}
-                  <div style={{ margin: 'auto', fontSize: '12px', color: '#222' }}>
-                    <ul>
-                      {((currentMatchupResults?.breakdown?.length || 0) > 1) && currentMatchupResults?.breakdown.map((result) => (
-                        <li style={{ listStyleType: "none" }} key={result.defendingType.name}>
-                          {result.defendingType.name}: x{result.effectiveness}
-                        </li>
-                      ))}
-                    </ul>
+                  <div style={{ fontSize: '12px' }}>
+                    {resultsBreakdown}
                   </div>
-                  <div style={{ fontSize: '10px' }}>
-                    <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">Is that really true?!</a>
-                  </div>
+                  {!lastAnswerCorrect && (
+                    <div style={{ fontSize: '10px' }}>
+                      <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">Is that really true?!</a>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -116,14 +116,14 @@ function App() {
 
       <div>
         {(!currentMatchup || showResults) ? (
-          <button style={{ padding: '1em', width: '180px', color: 'white', backgroundColor: '#1E90FF' }} onClick={onNewMatchupClick}>
+          <button className="next-button" onClick={onNewMatchupClick}>
             New Matchup
           </button>
         ) : (
-          // <button onClick={onShowResultsClick}>
-          //   Show Results
-          // </button>
           <>
+            <div className="question-text">
+              <span>What is the damage multiplier for the attack?</span>
+            </div>
             <div className="answer-buttons">
               {[0.25, 0.5, 1, 2, 4].map(value => (
                 <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
@@ -134,8 +134,6 @@ function App() {
         )}
 
       </div>
-      {/* Open in new tab */}
-
       <div style={{ marginTop: '40px', fontSize: '10px' }}>
         <span>{answersCorrectCount} / {questionsAnsweredCount} ({scorePercentage}%)</span>
       </div>

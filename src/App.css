@@ -77,6 +77,14 @@
   padding: 0.5em;
 }
 
+.next-button {
+  margin-top: 1em;
+  padding: 1em;
+  width: 180px;
+  color: white;
+  background-color: #1E90FF;
+}
+
 .result-icon {
   font-size: clamp(24px, 8vw, 36px);
   border-radius: 1em;
@@ -92,7 +100,7 @@
 .result-text {
   font-size: clamp(18px, 5vw, 24px);
   font-weight: bolder;
-  margin: 20px;
+  margin-top: 20px;
 }
 
 @media (max-width: 480px) {
