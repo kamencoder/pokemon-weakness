@@ -1,15 +1,31 @@
-import { useEffect, useMemo, useState } from 'react'
+import { use, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
 import { TypeIcon } from './helpers/type-icons';
+import { useSettings } from './Settings';
 
 function App() {
   const [currentMatchup, setCurrentMatchup] = useState<Matchup | undefined>();
+  const settings = useSettings();
   const [showResults, setShowResults] = useState(false);
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | undefined>(undefined);
   const [answersCorrectCount, setAnswersCorrectCount] = useState(0);
   const [questionsAnsweredCount, setQuestionsAnsweredCount] = useState(0);
   const scorePercentage = questionsAnsweredCount ? Math.round(answersCorrectCount / questionsAnsweredCount * 100) : 0;
+  const scoreText = useMemo(() => {
+    if (scorePercentage >= 90) {
+      return "Outstanding!";
+    } else if (scorePercentage >= 80){
+      return "Great job!"
+    } else if (scorePercentage >= 70){
+      return "You did ok!"
+    } else if (scorePercentage >= 60){
+      return "Keep practicing!"
+    } else if (scorePercentage < 60){
+      return "Better luck next time :("
+    }
+  }, [scorePercentage])
+
   const currentMatchupResults = useMemo(() => {
     if (!currentMatchup) {
       console.log('No matchup set!');
@@ -26,6 +42,27 @@ function App() {
       .map(result => `${result.defendingType.name}: x${result.effectiveness}`)
       .join(", ");
   }, [currentMatchupResults]);
+
+  const finished = useMemo(() => {
+    if (!settings.numberOfQuestions) {
+      return false;
+    } else {
+      return questionsAnsweredCount >= settings.numberOfQuestions;
+    }
+  }, [settings.numberOfQuestions, questionsAnsweredCount])
+  const [viewScore, setViewScore] = useState(false);
+
+  const onResetClick = () => {
+    setLastAnswerCorrect(undefined);
+    setQuestionsAnsweredCount(0);
+    setAnswersCorrectCount(0);
+    setViewScore(false);
+    setShowResults(false);
+  }
+
+  const onViewScoreClick = () => {
+    setViewScore(true);
+  }
 
   const onNewMatchupClick = () => {
     setShowResults(false);
@@ -60,6 +97,32 @@ function App() {
         onClick={onClick}>
         {effectivenessDetail.value}x
       </button>
+    )
+  }
+
+
+  console.log("Render status: ", {
+    questionsAnsweredCount,
+    questionCount: settings.numberOfQuestions,
+    answersCorrectCount,
+    scorePercentage,
+    currentMatchup,
+    showResults,
+    lastAnswerCorrect,
+    finished,
+    viewScore,
+  })
+
+  if (viewScore) {
+    console.log("showing view score screen");
+    return (
+      <>
+        <h2>{scoreText}</h2>
+        <div>Your Score: {scorePercentage}% ({answersCorrectCount}/{questionsAnsweredCount})</div>
+        <button className="primary-button" onClick={onResetClick}>
+          Try again
+        </button>
+      </>
     )
   }
 
@@ -115,28 +178,40 @@ function App() {
       </div>
 
       <div>
-        {(!currentMatchup || showResults) ? (
-          <button className="next-button" onClick={onNewMatchupClick}>
-            New Matchup
-          </button>
+        {(!currentMatchup || showResults) ?
+          !finished ? (
+            <button className="primary-button" onClick={onNewMatchupClick}>
+              New Matchup
+            </button>
+          ) : (
+            <button className="primary-button" onClick={onViewScoreClick}>
+              View Score
+            </button>
+          )
+          : (
+            <>
+              <div className="question-text">
+                <span>What is the damage multiplier for the attack?</span>
+              </div>
+              <div className="answer-buttons">
+                {[0.25, 0.5, 1, 2, 4].map(value => (
+                  <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
+                ))}
+                <AnswerButton effectivenessDetail={effectivenessDetails[0]} />
+              </div>
+            </>
+          )}
+
+      </div>
+      {!showResults && <div style={{ marginTop: '40px', fontSize: '10px' }}>
+        {settings.numberOfQuestions ? (
+          <span>Question {questionsAnsweredCount + 1} / {settings.numberOfQuestions}</span>
         ) : (
-          <>
-            <div className="question-text">
-              <span>What is the damage multiplier for the attack?</span>
-            </div>
-            <div className="answer-buttons">
-              {[0.25, 0.5, 1, 2, 4].map(value => (
-                <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
-              ))}
-              <AnswerButton effectivenessDetail={effectivenessDetails[0]} />
-            </div>
-          </>
+          <span>Question {questionsAnsweredCount + 1} / ♾️ - Score: {scorePercentage}%</span>
         )}
 
       </div>
-      <div style={{ marginTop: '40px', fontSize: '10px' }}>
-        <span>{answersCorrectCount} / {questionsAnsweredCount} ({scorePercentage}%)</span>
-      </div>
+      }
     </>
   )
 }
