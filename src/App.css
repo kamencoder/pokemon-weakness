@@ -48,6 +48,7 @@
   color: white;
   padding: 0.5em;
   border-radius: 20px;
+  text-shadow: 2px 2px 4px #333;
 }
 
 .matchup-section-text {
@@ -78,6 +79,7 @@
   color: white;
   font-weight: bold;
   padding: 0.5em;
+  text-shadow: 2px 2px 4px #333;
 }
 
 .primary-button {
