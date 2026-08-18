@@ -3,6 +3,9 @@ import './App.css'
 import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
 import { TypeIcon } from './helpers/type-icons';
 import { useSettings } from './Settings';
+import smileImg from './assets/results/smile.svg';
+import neutralImg from './assets/results/nuetral.svg';
+import frownImg from './assets/results/frown.svg';
 
 function App() {
   const [currentMatchup, setCurrentMatchup] = useState<Matchup | undefined>();
@@ -21,6 +24,14 @@ function App() {
     else if (scorePercentage >= 60) return "Keep practicing!";
     else return "Better luck next time";
   }, [scorePercentage]);
+
+  
+  const scoreImage = useMemo(() => {
+    if (scorePercentage >= 80) return smileImg;
+    else if (scorePercentage >= 60) return neutralImg;
+    else return frownImg;
+  }, [scorePercentage]);
+
 
   const scoreColor = useMemo(() => {
     if (scorePercentage >= 90) return '#48c78e';
@@ -151,6 +162,7 @@ function App() {
       {viewScore ? (
         <div className="score-view">
           <div className="score-percentage" style={{ color: scoreColor }}>{scorePercentage}%</div>
+          <img src={scoreImage} className="score-image" alt="" />
           <div className="score-tier-text">{scoreText}</div>
           <div className="score-detail">{answersCorrectCount} / {questionsAnsweredCount} correct</div>
           <button className="primary-button" onClick={onResetClick}>Try Again</button>

@@ -340,6 +340,12 @@
   padding: 1rem 0 2rem;
 }
 
+.score-image {
+  width: clamp(100px, 30vw, 160px);
+  height: auto;
+  margin: 0.5rem 0;
+}
+
 .score-percentage {
   font-size: clamp(4rem, 15vw, 6rem);
   font-weight: 900;
