@@ -214,7 +214,7 @@ function App() {
                     <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
                   ))}
                 </div>
-                <div className="answer-buttons" style={{ marginTop: '0.5rem' }}>
+                <div className="answer-buttons" style={{ marginTop: '1rem' }}>
                   <AnswerButton effectivenessDetail={effectivenessDetails[0 as Effectiveness]} key={0} />
                 </div>
 
