@@ -133,6 +133,10 @@ function App() {
     const onClick = () => checkAnswer(value);
 
     let stateClass = '';
+    if (!settings.includeDualTypes && (value === 0.25 || value === 4)) {
+      // Hide 0.25x and 4x when dual types are disabled.
+      return null;
+    }
     if (showResults) {
       const isCorrectAnswer = value === currentMatchupResults?.totalEffectiveness;
       const isSelectedWrong = value === lastAnswerValue && !isCorrectAnswer;
@@ -224,6 +228,11 @@ function App() {
           <div className="score-tier-text">{scoreText}</div>
           <div className="score-detail">{answersCorrectCount} / {questionsAnsweredCount} correct</div>
           <button className="primary-button" onClick={onResetClick}>Try Again</button>
+          <p className="score-did-you-know">
+            Did you know? There are{' '}
+            <strong>{settings.includeDualTypes ? '3,078' : '324'}</strong>{' '}
+            possible type matchups{settings.includeDualTypes ? ' when including both single and dual type pokemon' : ' for single type pokemon'}. 
+          </p>
         </div>
       ) : (
         <>

@@ -392,6 +392,14 @@
   color: var(--text-muted);
 }
 
+.score-did-you-know {
+  margin-top: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
 /* ── Settings panel ── */
 .settings-panel {
   display: flex;
