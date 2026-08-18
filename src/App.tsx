@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import './App.css'
-import { effectivenessDetails, evaluateMatchup, getEffectivenessColor, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
+import { effectivenessDetails, effectivenessValueDetailList, evaluateMatchup, getEffectivenessColor, getRandomMatchup, type Effectiveness, type EffectivenessDetail, type Matchup } from './data/weaknesses';
 import { TypeIcon } from './helpers/type-icons';
 import { defaultSettings, type Settings } from './Settings';
+
 import smileImg from './assets/results/smile.svg';
 import neutralImg from './assets/results/nuetral.svg';
 import frownImg from './assets/results/frown.svg';
@@ -67,6 +68,7 @@ function App() {
     pendingSettings.includeDualTypes !== settings.includeDualTypes;
 
   const [viewScore, setViewScore] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   const toggleSettings = () => {
     setPendingSettings(settings);
@@ -278,14 +280,42 @@ function App() {
           <div className="interaction-area">
             {currentMatchup ? (
               <>
-                <div className="question-text">What is the damage multiplier for the attack?</div>
+                <div className="question-row">
+                  <div className="question-text">What is the damage multiplier for the attack?</div>
+                  <button
+                    className={`help-trigger${showHelp ? ' active' : ''}`}
+                    onClick={() => setShowHelp(h => !h)}
+                    aria-label="Explain multipliers"
+                  >
+                    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <circle cx="10" cy="10" r="9"/>
+                      <text x="10" y="14" textAnchor="middle" fontSize="11" fontWeight="700" stroke="none" fill="currentColor">?</text>
+                    </svg>
+                  </button>
+                </div>
+                {showHelp && (
+                  <div className="help-panel">
+                    <button className="help-close" onClick={() => setShowHelp(false)} aria-label="Close">✕</button>
+                    {effectivenessValueDetailList.map(detail => (
+                      <div key={detail.value} className="help-row">
+                        <div className="help-badge" style={{ backgroundColor: getEffectivenessColor(detail.value) }}>
+                          {detail.buttonText}
+                        </div>
+                        <div>
+                          <span className="help-title">{detail.helpTitle}</span>
+                          <span className="help-desc">{detail.helpText}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 <div className="answer-buttons">
                   {[0.25, 0.5, 1, 2, 4].map(value => (
                     <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
                   ))}
                 </div>
-                <div className="answer-buttons" style={{ marginTop: '1rem' }}>
+                <div className="answer-buttons answer-buttons-immune" style={{ marginTop: '1rem' }}>
                   <AnswerButton effectivenessDetail={effectivenessDetails[0 as Effectiveness]} key={0} />
                 </div>
 
@@ -296,8 +326,9 @@ function App() {
                         {lastAnswerCorrect ? '✓' : '✗'}
                       </div>
                       <div className="result-details">
-                        <div className="result-effectiveness" style={{ color: currentMatchupResults?.totalEffectivenessColor }}>
-                          {currentMatchupResults?.totalEffectivenessDescription}
+                        {/* <div className="result-effectiveness" style={{ color: currentMatchupResults?.totalEffectivenessColor }}> */}
+                        <div className="result-effectiveness" style={{ color: 'white' }}>
+                          It's {currentMatchupResults?.totalEffectivenessDescription}
                         </div>
                         {resultsBreakdown && (
                           <div className="result-breakdown">{resultsBreakdown}</div>
