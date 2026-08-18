@@ -205,16 +205,49 @@ export const getEffectivenessColor = (effectiveness?: Effectiveness): string => 
 
 export type EffectivenessDetail = {
     value: Effectiveness;
+    buttonText: string;
     description: string;
     color: string;
 }
 export const effectivenessDetails: { [key in Effectiveness]: EffectivenessDetail } = {
-    0: { value: 0, description: 'No Effect (x0)', color: '#AAA' },
-    0.25: { value: 0.25, description: 'Extremely Ineffective (1⁄4)', color: '#FFD93B' },
-    0.5: { value: 0.5, description: 'Not Very Effective (1⁄2)', color: '#FFA531' },
-    1: { value: 1, description: 'Normal Effectiveness (x1)', color: '#FF6B1A' },
-    2: { value: 2, description: 'Super Effective (2x)', color: '#E63946' },
-    4: { value: 4, description: 'Extremely Effective (4x)', color: '#dd539fff' },
+    0: { 
+        value: 0,
+        buttonText: 'None',
+        description: 'No Effect (x0)',
+        color: '#AAA' 
+    },
+    0.25: { 
+        value: 0.25, 
+        // buttonText: '¼x', 
+        buttonText: '0.25x', 
+        description: 'Extremely Ineffective (1⁄4)', 
+        color: '#FFD93B' 
+    },
+    0.5: { 
+        value: 0.5, 
+        // buttonText: '½x',
+        buttonText: '0.5x',
+        description: 'Not Very Effective (1⁄2)', 
+        color: '#FFA531' 
+    },
+    1: { 
+        value: 1, 
+        buttonText: '1x', 
+        description: 'Normal Effectiveness (x1)', 
+        color: '#FF6B1A' 
+    },
+    2: { 
+        value: 2, 
+        buttonText: '2x', 
+        description: 'Super Effective (2x)', 
+        color: '#E63946' 
+    },
+    4: { 
+        value: 4, 
+        buttonText: '4x', 
+        description: 'Extremely Effective (4x)', 
+        color: '#dd539fff' 
+    },
 };
 
 export const effectivenessValues: Effectiveness[] = [0, 0.25, 0.5, 1, 2, 4];

@@ -9,10 +9,31 @@
 
 /* ── Header ── */
 .app-header {
+  position: relative;
   text-align: center;
   padding-bottom: 1.25rem;
   margin-bottom: 1.5rem;
   border-bottom: 1px solid var(--border);
+}
+
+.settings-trigger {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.settings-trigger:hover {
+  color: var(--text);
 }
 
 .app-title {
@@ -259,6 +280,12 @@
   transition: opacity 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 
+.answer-buttons-immune .answer-button {
+  height: 1.5em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+}
+
 .answer-button:disabled {
   pointer-events: none;
 }
@@ -363,6 +390,105 @@
 .score-detail {
   font-size: 0.9375rem;
   color: var(--text-muted);
+}
+
+/* ── Settings panel ── */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.settings-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.settings-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.settings-options {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.settings-option {
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.settings-option.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.settings-option:hover:not(.active) {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.settings-warning {
+  font-size: 0.8125rem;
+  color: #f4a723;
+  margin: 0;
+  text-align: center;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.settings-cancel {
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.settings-cancel:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+}
+
+.settings-save {
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings-save:hover {
+  background: var(--accent-hover);
 }
 
 @media (max-width: 400px) {
