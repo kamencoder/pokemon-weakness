@@ -12,19 +12,22 @@ function App() {
   const [answersCorrectCount, setAnswersCorrectCount] = useState(0);
   const [questionsAnsweredCount, setQuestionsAnsweredCount] = useState(0);
   const scorePercentage = questionsAnsweredCount ? Math.round(answersCorrectCount / questionsAnsweredCount * 100) : 0;
+
   const scoreText = useMemo(() => {
-    if (scorePercentage >= 90) {
-      return "Outstanding!";
-    } else if (scorePercentage >= 80){
-      return "Great job!"
-    } else if (scorePercentage >= 70){
-      return "You did ok!"
-    } else if (scorePercentage >= 60){
-      return "Keep practicing!"
-    } else if (scorePercentage < 60){
-      return "Better luck next time :("
-    }
-  }, [scorePercentage])
+    if (scorePercentage >= 90) return "Outstanding!";
+    else if (scorePercentage >= 80) return "Great job!";
+    else if (scorePercentage >= 70) return "You did ok!";
+    else if (scorePercentage >= 60) return "Keep practicing!";
+    else return "Better luck next time";
+  }, [scorePercentage]);
+
+  const scoreColor = useMemo(() => {
+    if (scorePercentage >= 90) return '#48c78e';
+    if (scorePercentage >= 80) return '#5b8af0';
+    if (scorePercentage >= 70) return '#ffe08a';
+    if (scorePercentage >= 60) return '#f4a723';
+    return '#f14668';
+  }, [scorePercentage]);
 
   const currentMatchupResults = useMemo(() => {
     if (!currentMatchup) {
@@ -34,6 +37,7 @@ function App() {
     const matchupResults = evaluateMatchup(currentMatchup);
     return matchupResults;
   }, [currentMatchup]);
+
   const resultsBreakdown = useMemo(() => {
     if ((currentMatchupResults?.breakdown?.length || 0) < 1) {
       return "";
@@ -49,7 +53,8 @@ function App() {
     } else {
       return questionsAnsweredCount >= settings.numberOfQuestions;
     }
-  }, [settings.numberOfQuestions, questionsAnsweredCount])
+  }, [settings.numberOfQuestions, questionsAnsweredCount]);
+
   const [viewScore, setViewScore] = useState(false);
 
   const onResetClick = () => {
@@ -58,23 +63,23 @@ function App() {
     setAnswersCorrectCount(0);
     setViewScore(false);
     setShowResults(false);
-  }
+  };
 
   const onViewScoreClick = () => {
     setViewScore(true);
-  }
+  };
 
   const onNewMatchupClick = () => {
     setShowResults(false);
     setLastAnswerCorrect(undefined);
     const newMatchup = getRandomMatchup(2);
     setCurrentMatchup(newMatchup);
-  }
+  };
 
   useEffect(() => {
     const newMatchup = getRandomMatchup(1);
     setCurrentMatchup(newMatchup);
-  }, [])
+  }, []);
 
   const checkAnswer = (userAnswer: Effectiveness) => {
     if (userAnswer === currentMatchupResults?.totalEffectiveness) {
@@ -86,7 +91,7 @@ function App() {
       setLastAnswerCorrect(false);
     }
     setShowResults(true);
-  }
+  };
 
   const AnswerButton = ({ effectivenessDetail }: { effectivenessDetail: EffectivenessDetail }) => {
     const onClick = () => checkAnswer(effectivenessDetail.value);
@@ -97,9 +102,8 @@ function App() {
         onClick={onClick}>
         {effectivenessDetail.value}x
       </button>
-    )
-  }
-
+    );
+  };
 
   console.log("Render status: ", {
     questionsAnsweredCount,
@@ -111,112 +115,121 @@ function App() {
     lastAnswerCorrect,
     finished,
     viewScore,
-  })
+  });
 
-  if (viewScore) {
-    console.log("showing view score screen");
-    return (
-      <div className="score-view">
-        <h2>{scoreText}</h2>
-        <div>Your Score: {scorePercentage}% ({answersCorrectCount}/{questionsAnsweredCount})</div>
-        <button className="primary-button" onClick={onResetClick}>
-          Try again
-        </button>
-      </div>
-    )
-  }
+  const questionNumber = questionsAnsweredCount + (showResults ? 0 : 1);
 
   return (
     <>
-      {/* <h1>Pokemon Type Weakness Test</h1> */}
-      <div className="card">
-        {currentMatchup && (
-          <>
-            <div className="matchup-container">
+      <header className="app-header">
+        <h1 className="app-title">Pokémon Type Quiz</h1>
+        <p className="app-subtitle">Guess the damage multiplier for each type matchup</p>
+      </header>
+
+      {viewScore ? (
+        <div className="score-view">
+          <div className="score-percentage" style={{ color: scoreColor }}>{scorePercentage}%</div>
+          <div className="score-tier-text">{scoreText}</div>
+          <div className="score-detail">{answersCorrectCount} / {questionsAnsweredCount} correct</div>
+          <button className="primary-button" onClick={onResetClick}>Try Again</button>
+        </div>
+      ) : (
+        <>
+          <div className="progress-area">
+            <div className="progress-label">
+              <span>
+                {settings.numberOfQuestions
+                  ? `Question ${questionNumber} / ${settings.numberOfQuestions}`
+                  : `Question ${questionNumber}`}
+              </span>
+              <span>{scorePercentage}%</span>
+            </div>
+            <div className="progress-bar-track">
+              <div
+                className="progress-bar-fill"
+                style={{
+                  width: settings.numberOfQuestions
+                    ? `${(questionsAnsweredCount / settings.numberOfQuestions) * 100}%`
+                    : `${scorePercentage}%`
+                }}
+              />
+            </div>
+          </div>
+
+          {currentMatchup && (
+            <div className="matchup-card">
               <div className="matchup-section">
-                <div className="matchup-section-text">Attack Type</div>
-                <div className="matchup-type-container" style={{ backgroundColor: currentMatchup.attackingType.color }}>
-                  <div><TypeIcon type={currentMatchup.attackingType.name} style={{ width: '1em', height: '1em' }} /></div>
+                <div className="matchup-section-label">Attack Type</div>
+                <div className="type-chip" style={{ backgroundColor: currentMatchup.attackingType.color }}>
+                  <TypeIcon type={currentMatchup.attackingType.name} style={{ width: '1em', height: '1em' }} />
                   <div>{currentMatchup.attackingType.name}</div>
                 </div>
               </div>
-              <div>
-                <div style={{ fontSize: '3em' }}>Vs.</div>
-              </div>
+
+              <div className="matchup-divider">vs</div>
+
               <div className="matchup-section">
-                <div className="matchup-section-text">Defending Types</div>
+                <div className="matchup-section-label">
+                  Defending Type{currentMatchup.defendingTypes.length > 1 ? 's' : ''}
+                </div>
                 {currentMatchup.defendingTypes.map(d => (
-                  <div key={d.name} className="matchup-type-container" style={{ backgroundColor: d.color }}>
-                    <div><TypeIcon type={d.name} style={{ width: '1em', height: '1em' }} /></div>
+                  <div key={d.name} className="type-chip" style={{ backgroundColor: d.color }}>
+                    <TypeIcon type={d.name} style={{ width: '1em', height: '1em' }} />
                     <div>{d.name}</div>
                   </div>
                 ))}
               </div>
             </div>
-            <div style={{ marginTop: '40px' }}>
-              {showResults && (
-                <>
-                  <div className="result-icon" style={{ backgroundColor: lastAnswerCorrect ? 'green' : 'red' }}>
-                    {lastAnswerCorrect ? '✔' : '✘'}
-                  </div>
-                  <div className="result-text" style={{ color: currentMatchupResults?.totalEffectivenessColor }}>
-                    {currentMatchupResults?.totalEffectivenessDescription}
-                  </div>
-                  <div style={{ fontSize: '12px' }}>
-                    {resultsBreakdown}
-                  </div>
-                  {!lastAnswerCorrect && (
-                    <div style={{ fontSize: '10px' }}>
-                      <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">Is that really true?!</a>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-
-      <div>
-        {(!currentMatchup || showResults) ?
-          !finished ? (
-            <button className="primary-button" onClick={onNewMatchupClick}>
-              Next Matchup
-            </button>
-          ) : (
-            <button className="primary-button" onClick={onViewScoreClick}>
-              View Score
-            </button>
-          )
-          : (
-            <>
-              <div className="question-text">
-                <span>What is the damage multiplier for the attack?</span>
-              </div>
-              <div className="answer-buttons" style={{marginTop: "1rem"}}>
-                {[0.25, 0.5, 1, 2, 4].map(value => (
-                  <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
-                ))}
-              </div>
-              <div className="answer-buttons" style={{marginTop: "0.5rem"}}>
-                <AnswerButton effectivenessDetail={effectivenessDetails[0 as Effectiveness]} key={0} />
-                
-              </div>
-            </>
           )}
 
-      </div>
-      {!showResults && <div style={{ marginTop: '40px', fontSize: '10px' }}>
-        {settings.numberOfQuestions ? (
-          <span>Question {questionsAnsweredCount + 1} / {settings.numberOfQuestions}</span>
-        ) : (
-          <span>Question {questionsAnsweredCount + 1} / ♾️ - Score: {scorePercentage}%</span>
-        )}
+          <div className="interaction-area">
+            {currentMatchup && showResults && (
+              <div className={`result-banner ${lastAnswerCorrect ? 'correct' : 'incorrect'}`}>
+                <div className={`result-icon ${lastAnswerCorrect ? 'correct' : 'incorrect'}`}>
+                  {lastAnswerCorrect ? '✓' : '✗'}
+                </div>
+                <div className="result-details">
+                  <div className="result-effectiveness" style={{ color: currentMatchupResults?.totalEffectivenessColor }}>
+                    {currentMatchupResults?.totalEffectivenessDescription}
+                  </div>
+                  {resultsBreakdown && (
+                    <div className="result-breakdown">{resultsBreakdown}</div>
+                  )}
+                  {!lastAnswerCorrect && (
+                    <div className="result-link">
+                      <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">
+                        Is that really true?!
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
-      </div>
-      }
+            {(!currentMatchup || showResults) ? (
+              !finished ? (
+                <button className="primary-button" onClick={onNewMatchupClick}>Next Matchup</button>
+              ) : (
+                <button className="primary-button" onClick={onViewScoreClick}>View Score</button>
+              )
+            ) : (
+              <div className="question-area">
+                <div className="question-text">What is the damage multiplier for the attack?</div>
+                <div className="answer-buttons">
+                  {[0.25, 0.5, 1, 2, 4].map(value => (
+                    <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
+                  ))}
+                </div>
+                <div className="answer-buttons" style={{ marginTop: '0.5rem' }}>
+                  <AnswerButton effectivenessDetail={effectivenessDetails[0 as Effectiveness]} key={0} />
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </>
-  )
+  );
 }
 
 export default App
