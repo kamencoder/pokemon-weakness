@@ -116,13 +116,13 @@ function App() {
   if (viewScore) {
     console.log("showing view score screen");
     return (
-      <>
+      <div className="score-view">
         <h2>{scoreText}</h2>
         <div>Your Score: {scorePercentage}% ({answersCorrectCount}/{questionsAnsweredCount})</div>
         <button className="primary-button" onClick={onResetClick}>
           Try again
         </button>
-      </>
+      </div>
     )
   }
 

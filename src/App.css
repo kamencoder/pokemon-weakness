@@ -82,8 +82,13 @@
   text-shadow: 2px 2px 4px #333;
 }
 
+.score-view {
+  text-align: center;
+}
+
 .primary-button {
-  margin-top: 1em;
+  display: block;
+  margin: 1em auto 0;
   padding: 1em;
   width: 180px;
   color: white;
