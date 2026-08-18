@@ -9,6 +9,7 @@ function App() {
   const settings = useSettings();
   const [showResults, setShowResults] = useState(false);
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | undefined>(undefined);
+  const [lastAnswerValue, setLastAnswerValue] = useState<Effectiveness | undefined>(undefined);
   const [answersCorrectCount, setAnswersCorrectCount] = useState(0);
   const [questionsAnsweredCount, setQuestionsAnsweredCount] = useState(0);
   const scorePercentage = questionsAnsweredCount ? Math.round(answersCorrectCount / questionsAnsweredCount * 100) : 0;
@@ -59,6 +60,7 @@ function App() {
 
   const onResetClick = () => {
     setLastAnswerCorrect(undefined);
+    setLastAnswerValue(undefined);
     setQuestionsAnsweredCount(0);
     setAnswersCorrectCount(0);
     setViewScore(false);
@@ -72,6 +74,7 @@ function App() {
   const onNewMatchupClick = () => {
     setShowResults(false);
     setLastAnswerCorrect(undefined);
+    setLastAnswerValue(undefined);
     const newMatchup = getRandomMatchup(2);
     setCurrentMatchup(newMatchup);
   };
@@ -82,6 +85,7 @@ function App() {
   }, []);
 
   const checkAnswer = (userAnswer: Effectiveness) => {
+    setLastAnswerValue(userAnswer);
     if (userAnswer === currentMatchupResults?.totalEffectiveness) {
       setLastAnswerCorrect(true);
       setQuestionsAnsweredCount(questionsAnsweredCount + 1);
@@ -94,13 +98,30 @@ function App() {
   };
 
   const AnswerButton = ({ effectivenessDetail }: { effectivenessDetail: EffectivenessDetail }) => {
-    const onClick = () => checkAnswer(effectivenessDetail.value);
+    const { value } = effectivenessDetail;
+    const onClick = () => checkAnswer(value);
+
+    let stateClass = '';
+    if (showResults) {
+      const isCorrectAnswer = value === currentMatchupResults?.totalEffectiveness;
+      const isSelectedWrong = value === lastAnswerValue && !isCorrectAnswer;
+
+      if (isCorrectAnswer) {
+        stateClass = 'answer-correct';
+      } else if (isSelectedWrong) {
+        stateClass = 'answer-selected-wrong';
+      } else {
+        stateClass = 'answer-dimmed';
+      }
+    }
+
     return (
       <button
-        className="answer-button"
-        style={{ backgroundColor: getEffectivenessColor(effectivenessDetail.value) }}
-        onClick={onClick}>
-        {effectivenessDetail.value}x
+        className={`answer-button ${stateClass}`}
+        style={{ backgroundColor: getEffectivenessColor(value) }}
+        onClick={onClick}
+        disabled={showResults}>
+        {value}x
       </button>
     );
   };
@@ -113,6 +134,7 @@ function App() {
     currentMatchup,
     showResults,
     lastAnswerCorrect,
+    lastAnswerValue,
     finished,
     viewScore,
   });
@@ -183,38 +205,10 @@ function App() {
           )}
 
           <div className="interaction-area">
-            {currentMatchup && showResults && (
-              <div className={`result-banner ${lastAnswerCorrect ? 'correct' : 'incorrect'}`}>
-                <div className={`result-icon ${lastAnswerCorrect ? 'correct' : 'incorrect'}`}>
-                  {lastAnswerCorrect ? '✓' : '✗'}
-                </div>
-                <div className="result-details">
-                  <div className="result-effectiveness" style={{ color: currentMatchupResults?.totalEffectivenessColor }}>
-                    {currentMatchupResults?.totalEffectivenessDescription}
-                  </div>
-                  {resultsBreakdown && (
-                    <div className="result-breakdown">{resultsBreakdown}</div>
-                  )}
-                  {!lastAnswerCorrect && (
-                    <div className="result-link">
-                      <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">
-                        Is that really true?!
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {(!currentMatchup || showResults) ? (
-              !finished ? (
-                <button className="primary-button" onClick={onNewMatchupClick}>Next Matchup</button>
-              ) : (
-                <button className="primary-button" onClick={onViewScoreClick}>View Score</button>
-              )
-            ) : (
-              <div className="question-area">
+            {currentMatchup ? (
+              <>
                 <div className="question-text">What is the damage multiplier for the attack?</div>
+
                 <div className="answer-buttons">
                   {[0.25, 0.5, 1, 2, 4].map(value => (
                     <AnswerButton effectivenessDetail={effectivenessDetails[value as Effectiveness]} key={value} />
@@ -223,7 +217,45 @@ function App() {
                 <div className="answer-buttons" style={{ marginTop: '0.5rem' }}>
                   <AnswerButton effectivenessDetail={effectivenessDetails[0 as Effectiveness]} key={0} />
                 </div>
-              </div>
+
+                {showResults && (
+                  <div className="result-row">
+                    <div className={`result-banner ${lastAnswerCorrect ? 'correct' : 'incorrect'}`}>
+                      <div className={`result-icon ${lastAnswerCorrect ? 'correct' : 'incorrect'}`}>
+                        {lastAnswerCorrect ? '✓' : '✗'}
+                      </div>
+                      <div className="result-details">
+                        <div className="result-effectiveness" style={{ color: currentMatchupResults?.totalEffectivenessColor }}>
+                          {currentMatchupResults?.totalEffectivenessDescription}
+                        </div>
+                        {resultsBreakdown && (
+                          <div className="result-breakdown">{resultsBreakdown}</div>
+                        )}
+                        {!lastAnswerCorrect && (
+                          <div className="result-link">
+                            <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">
+                              Is that really true?!
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {!finished ? (
+                      <button className="next-button" onClick={onNewMatchupClick}>
+                        <span className="next-arrow">▶</span>
+                        <span>Next</span>
+                      </button>
+                    ) : (
+                      <button className="next-button" onClick={onViewScoreClick}>
+                        <span className="next-arrow">✓</span>
+                        <span>Score</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              <button className="primary-button" onClick={onNewMatchupClick}>Next Matchup</button>
             )}
           </div>
         </>
