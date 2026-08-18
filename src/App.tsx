@@ -181,7 +181,7 @@ function App() {
         {(!currentMatchup || showResults) ?
           !finished ? (
             <button className="primary-button" onClick={onNewMatchupClick}>
-              New Matchup
+              Next Matchup
             </button>
           ) : (
             <button className="primary-button" onClick={onViewScoreClick}>
