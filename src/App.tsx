@@ -331,12 +331,13 @@ function App() {
                           It's {currentMatchupResults?.totalEffectivenessDescription}
                         </div>
                         {resultsBreakdown && (
-                          <div className="result-breakdown">{resultsBreakdown}</div>
-                        )}
-                        {!lastAnswerCorrect && (
-                          <div className="result-link">
-                            <a href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer">
-                              Is that really true?!
+                          <div className="result-breakdown">
+                            {resultsBreakdown}
+                            <a className="result-breakdown-link" href="https://pokemondb.net/type" target="_blank" rel="noopener noreferrer" aria-label="Verify on PokemonDB">
+                              <svg viewBox="0 0 20 20" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <circle cx="10" cy="10" r="9"/>
+                                <text x="10" y="14" textAnchor="middle" fontSize="11" fontWeight="700" stroke="none" fill="currentColor">?</text>
+                              </svg>
                             </a>
                           </div>
                         )}

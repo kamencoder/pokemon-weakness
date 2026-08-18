@@ -237,14 +237,24 @@
 }
 
 .result-breakdown {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 0.15rem;
 }
 
-.result-link {
-  font-size: 0.75rem;
-  margin-top: 0.2rem;
+.result-breakdown-link {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.result-breakdown-link:hover {
+  color: var(--accent);
 }
 
 /* ── Question area ── */
