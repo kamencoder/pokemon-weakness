@@ -2,25 +2,25 @@ type ProgressBarProps = {
   questionNumber: number;
   totalQuestions: number;
   questionsAnsweredCount: number;
-  scorePercentage: number;
 };
 
 export function ProgressBar({
   questionNumber,
   totalQuestions,
   questionsAnsweredCount,
-  scorePercentage,
 }: ProgressBarProps) {
+  
+    const percentage = Math.round(questionsAnsweredCount / totalQuestions * 100);
   return (
     <div className="progress-area">
       <div className="progress-label">
         <span>Question {questionNumber} / {totalQuestions}</span>
-        <span>{scorePercentage}%</span>
+        <span>{percentage}%</span>
       </div>
       <div className="progress-bar-track">
         <div
           className="progress-bar-fill"
-          style={{ width: `${(questionsAnsweredCount / totalQuestions) * 100}%` }}
+          style={{ width: `${percentage}%` }}
         />
       </div>
     </div>

@@ -5,10 +5,6 @@ import { effectivenessDetails, evaluateMatchup, getRandomMatchup, type Effective
 import { getDailyMatchups } from './data/weaknesses';
 import { getInitialSettings, type Settings, type Mode } from './Settings';
 
-import smileImg from './assets/results/smile.svg';
-import neutralImg from './assets/results/nuetral.svg';
-import frownImg from './assets/results/frown.svg';
-
 import { Header } from './components/Header';
 import { SettingsPanel } from './components/SettingsPanel';
 import { ProgressBar } from './components/ProgressBar';
@@ -16,7 +12,7 @@ import { MatchupCard } from './components/MatchupCard';
 import { AnswerButton } from './components/AnswerButton';
 import { HelpPanel } from './components/HelpPanel';
 import { ResultBanner } from './components/ResultBanner';
-import { ScoreView } from './components/ScoreView';
+import { ScoreView, type AnswerRecord } from './components/ScoreView';
 
 const DAILY_QUESTION_COUNT = 20;
 
@@ -41,37 +37,13 @@ function App() {
   const [pendingSettings, setPendingSettings] = useState<Settings>(initialSettings);
   const [viewScore, setViewScore] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [answerHistory, setAnswerHistory] = useState<AnswerRecord[]>([]);
 
   const currentMatchup = matchupQueue[currentIndex];
   const totalQuestions = matchupQueue.length;
   const questionsAnsweredCount = currentIndex + (showResults ? 1 : 0);
   const finished = showResults && currentIndex >= matchupQueue.length - 1;
 
-  const scorePercentage = questionsAnsweredCount
-    ? Math.round(answersCorrectCount / questionsAnsweredCount * 100)
-    : 0;
-
-  const scoreText = useMemo(() => {
-    if (scorePercentage >= 90) return "Outstanding!";
-    if (scorePercentage >= 80) return "Great job!";
-    if (scorePercentage >= 70) return "You did ok!";
-    if (scorePercentage >= 60) return "Keep practicing!";
-    return "Better luck next time";
-  }, [scorePercentage]);
-
-  const scoreImage = useMemo(() => {
-    if (scorePercentage >= 80) return smileImg;
-    if (scorePercentage >= 60) return neutralImg;
-    return frownImg;
-  }, [scorePercentage]);
-
-  const scoreColor = useMemo(() => {
-    if (scorePercentage >= 90) return '#48c78e';
-    if (scorePercentage >= 80) return '#5b8af0';
-    if (scorePercentage >= 70) return '#ffe08a';
-    if (scorePercentage >= 60) return '#f4a723';
-    return '#f14668';
-  }, [scorePercentage]);
 
   const currentMatchupResults = useMemo(() => {
     if (!currentMatchup) return undefined;
@@ -103,6 +75,7 @@ function App() {
     setLastAnswerCorrect(undefined);
     setLastAnswerValue(undefined);
     setViewScore(false);
+    setAnswerHistory([]);
   };
 
   const toggleSettings = () => {
@@ -143,6 +116,16 @@ function App() {
     setShowResults(true);
 
     const defending = currentMatchup!.defendingTypes.map(d => d.name).join('/');
+
+    setAnswerHistory(h => [...h, {
+      questionNumber: currentIndex + 1,
+      matchupLabel: `${currentMatchup!.attackingType.name} → ${defending}`,
+      correct,
+      userAnswerText: effectivenessDetails[userAnswer].buttonText,
+      correctAnswerText: effectivenessDetails[currentMatchupResults!.totalEffectiveness].buttonText,
+      breakdown: resultsBreakdown,
+    }]);
+
     posthog.capture('matchup_answered', {
       matchup: `${currentMatchup!.attackingType.name} vs ${defending}`,
       attacking_type: currentMatchup!.attackingType.name,
@@ -170,14 +153,11 @@ function App() {
 
       {viewScore ? (
         <ScoreView
-          scorePercentage={scorePercentage}
-          scoreColor={scoreColor}
-          scoreImage={scoreImage}
-          scoreText={scoreText}
           answersCorrectCount={answersCorrectCount}
           questionsAnsweredCount={questionsAnsweredCount}
           mode={settings.mode}
           includeDualTypes={settings.includeDualTypes}
+          answerHistory={answerHistory}
           onReset={() => resetQuiz(settings)}
           onTryMode={onTryMode}
         />
@@ -187,7 +167,6 @@ function App() {
             questionNumber={currentIndex + 1}
             totalQuestions={totalQuestions}
             questionsAnsweredCount={questionsAnsweredCount}
-            scorePercentage={scorePercentage}
           />
 
           {currentMatchup && <MatchupCard matchup={currentMatchup} />}
