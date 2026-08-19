@@ -158,7 +158,6 @@ function App() {
           mode={settings.mode}
           includeDualTypes={settings.includeDualTypes}
           answerHistory={answerHistory}
-          onReset={() => resetQuiz(settings)}
           onTryMode={onTryMode}
         />
       ) : (
