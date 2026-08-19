@@ -223,3 +223,38 @@ export const effectivenessDetails: { [key in Effectiveness]: EffectivenessDetail
 export const effectivenessValues: Effectiveness[] = [0, 0.25, 0.5, 1, 2, 4];
 
 export const effectivenessValueDetailList: EffectivenessDetail[] = effectivenessValues.map(value => effectivenessDetails[value]);
+
+// Mulberry32 PRNG — deterministic given the same seed, used for the daily quiz.
+function mulberry32(seed: number): () => number {
+    let t = seed >>> 0;
+    return () => {
+        t = (t + 0x6D2B79F5) >>> 0;
+        let r = Math.imul(t ^ (t >>> 15), 1 | t);
+        r ^= r + Math.imul(r ^ (r >>> 7), 61 | r);
+        return ((r ^ (r >>> 14)) >>> 0) / 0x100000000;
+    };
+}
+
+export function getDailyMatchups(count: number): Matchup[] {
+    const d = new Date();
+    const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+    const rng = mulberry32(seed);
+    const types = Object.keys(typeDetailList) as PokemonTypeName[];
+    const matchups: Matchup[] = [];
+
+    for (let i = 0; i < count; i++) {
+        const attacking = types[Math.floor(rng() * types.length)];
+        const defendingCount = Math.floor(rng() * 2) + 1;
+        const defending: PokemonTypeName[] = [];
+        while (defending.length < defendingCount) {
+            const candidate = types[Math.floor(rng() * types.length)];
+            if (!defending.includes(candidate)) defending.push(candidate);
+        }
+        matchups.push({
+            attackingType: typeDetailList[attacking],
+            defendingTypes: defending.map(t => typeDetailList[t]),
+        });
+    }
+
+    return matchups;
+}
