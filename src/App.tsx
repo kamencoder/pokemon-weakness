@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import posthog from 'posthog-js'
 import './App.css'
 import { effectivenessDetails, evaluateMatchup, getRandomMatchup, type Effectiveness, type Matchup } from './data/weaknesses';
@@ -38,6 +38,12 @@ function App() {
   const [viewScore, setViewScore] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [answerHistory, setAnswerHistory] = useState<AnswerRecord[]>([]);
+
+  useEffect(() => {
+    if (showResults) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  }, [showResults]);
 
   const currentMatchup = matchupQueue[currentIndex];
   const totalQuestions = matchupQueue.length;

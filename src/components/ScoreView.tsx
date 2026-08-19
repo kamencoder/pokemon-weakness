@@ -141,6 +141,8 @@ export function ScoreView({
         Did you know? There are{' '}
         <strong>{includeDualTypes ? '3,078' : '324'}</strong>{' '}
         possible type matchups{includeDualTypes ? ' when including both single and dual type pokemon' : ' for single type pokemon'}.
+
+        {/* There are 171 total possible unique type combinations (18 single-type options plus 153 dual-type pairs). Of those, only 9 dual-type combinations are not represented by an existing pokemon.*/}
       </p>
     </div>
   );
