@@ -8,7 +8,7 @@
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   sodipodi:docname="smile.svg"
+   sodipodi:docname="cry.svg"
    inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -60,7 +60,7 @@
        inkscape:transform-center-y="3.3871548"
        sodipodi:nodetypes="csc"
        inkscape:label="sad mouth" /><path
-       style="display:none;fill:none;fill-rule:evenodd;stroke:#2d103f;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#2d103f;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
        d="m 102.87199,120.58428 c 0,0 5.39768,-10.4657 18.62934,-10.78541 14.05273,-0.33956 18.80763,10.78541 18.80763,10.78541"
        id="path7"
        inkscape:transform-center-x="0.044567827"
@@ -74,7 +74,7 @@
        inkscape:transform-center-y="3.3871548"
        sodipodi:nodetypes="cc"
        inkscape:label="straight mouth" /><path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#2d103f;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       style="display:none;fill:none;fill-rule:evenodd;stroke:#2d103f;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
        d="m 99.097136,114.699 c 0,0 10.032734,4.76102 23.264394,5.08073 14.05273,0.33956 23.08614,-5.08073 23.08614,-5.08073"
        id="path5"
        inkscape:transform-center-x="0.044567827"
@@ -83,8 +83,7 @@
        inkscape:label="happy mouth" /></g><g
      inkscape:groupmode="layer"
      id="layer2"
-     inkscape:label="eyes"
-     style="display:inline"><path
+     inkscape:label="eyes"><path
        d="m 78.411338,39.005127 c -1.72441,-0.36937 -2.666872,-1.49139 -2.942626,-3.50324 -0.296026,-2.159734 2.134726,-4.000294 4.441766,-3.363284 4.54786,1.25572 3.10744,7.853274 -1.49914,6.866524 z"
        style="display:inline;fill:#2d103f;fill-opacity:1"
        id="path1-5" /><path
@@ -94,8 +93,7 @@
      inkscape:groupmode="layer"
      id="layer3"
      inkscape:label="tears"
-     transform="matrix(0.6506024,0,0,0.75000006,26.572176,9.4227484)"
-     style="display:none"><ellipse
+     transform="matrix(0.6506024,0,0,0.75000006,26.572176,9.4227484)"><ellipse
        style="fill:#4eb6ff;fill-opacity:1;stroke:none;stroke-width:6.09127;stroke-linecap:round"
        id="path6"
        cx="80.689804"
