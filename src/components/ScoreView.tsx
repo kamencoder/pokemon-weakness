@@ -16,16 +16,11 @@ export type AnswerRecord = {
 };
 
 type ScoreViewProps = {
-  // scorePercentage: number;
-  // scoreColor: string;
-  // scoreImage: string;
-  // scoreText: string;
   answersCorrectCount: number;
   questionsAnsweredCount: number;
   mode: Mode;
   includeDualTypes: boolean;
   answerHistory: AnswerRecord[];
-  onReset: () => void;
   onTryMode: (mode: Mode) => void;
 };
 
@@ -45,7 +40,6 @@ export function ScoreView({
   mode,
   includeDualTypes,
   answerHistory,
-  onReset,
   onTryMode,
 }: ScoreViewProps) {
 
