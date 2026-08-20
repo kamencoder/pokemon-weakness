@@ -1,12 +1,12 @@
-import { getEffectivenessColor, type Effectiveness, type EffectivenessDetail } from '../data/weaknesses';
+import { getEffectivenessColor, type EffectivenessModifier, type EffectivenessLevelDetail } from '../data/weaknesses';
 
 type AnswerButtonProps = {
-  effectivenessDetail: EffectivenessDetail;
+  effectivenessDetail: EffectivenessLevelDetail;
   showResults: boolean;
   includeDualTypes: boolean;
-  correctAnswer: Effectiveness | undefined;
-  lastAnswerValue: Effectiveness | undefined;
-  onAnswer: (value: Effectiveness) => void;
+  correctAnswer: EffectivenessModifier | undefined;
+  lastAnswerValue: EffectivenessModifier | undefined;
+  onAnswer: (value: EffectivenessModifier) => void;
 };
 
 export function AnswerButton({

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import posthog from 'posthog-js'
 import './App.css'
-import { effectivenessDetails, evaluateMatchup, getRandomMatchup, type Effectiveness, type Matchup } from './data/weaknesses';
+import { effectivenessDetails, evaluateMatchup, getRandomMatchup, type EffectivenessModifier, type Matchup } from './data/weaknesses';
 import { getDailyMatchups } from './data/weaknesses';
 import { getInitialSettings, type Settings, type Mode } from './Settings';
 
@@ -32,7 +32,7 @@ function App() {
   const [answersCorrectCount, setAnswersCorrectCount] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | undefined>(undefined);
-  const [lastAnswerValue, setLastAnswerValue] = useState<Effectiveness | undefined>(undefined);
+  const [lastAnswerValue, setLastAnswerValue] = useState<EffectivenessModifier | undefined>(undefined);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<Settings>(initialSettings);
   const [viewScore, setViewScore] = useState(false);
@@ -114,7 +114,7 @@ function App() {
     resetQuiz(newSettings);
   };
 
-  const checkAnswer = (userAnswer: Effectiveness) => {
+  const checkAnswer = (userAnswer: EffectivenessModifier) => {
     setLastAnswerValue(userAnswer);
     const correct = userAnswer === currentMatchupResults?.totalEffectiveness;
     setLastAnswerCorrect(correct);
@@ -199,7 +199,7 @@ function App() {
                   {[0.25, 0.5, 1, 2, 4].map(value => (
                     <AnswerButton
                       key={value}
-                      effectivenessDetail={effectivenessDetails[value as Effectiveness]}
+                      effectivenessDetail={effectivenessDetails[value as EffectivenessModifier]}
                       showResults={showResults}
                       includeDualTypes={showAllMultiplierButtons}
                       correctAnswer={currentMatchupResults?.totalEffectiveness}
@@ -211,7 +211,7 @@ function App() {
                 <div className="answer-buttons answer-buttons-immune" style={{ marginTop: '1rem' }}>
                   <AnswerButton
                     key={0}
-                    effectivenessDetail={effectivenessDetails[0 as Effectiveness]}
+                    effectivenessDetail={effectivenessDetails[0 as EffectivenessModifier]}
                     showResults={showResults}
                     includeDualTypes={showAllMultiplierButtons}
                     correctAnswer={currentMatchupResults?.totalEffectiveness}
